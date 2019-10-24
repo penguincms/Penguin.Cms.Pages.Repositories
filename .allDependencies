@@ -1,0 +1,17 @@
+Penguin.Cms.Pages
+Penguin.Cms.Entities
+Penguin.Persistence.Abstractions
+Penguin.Entities.Abstractions
+Penguin.Reflection.Extensions
+Penguin.Extensions.String
+Penguin.Reflection.Abstractions
+Penguin.Templating.Abstractions
+Penguin.Cms.Repositories
+Penguin.Messaging.Core
+Penguin.Debugging
+Penguin.Extensions.Exceptions
+Penguin.Messaging.Abstractions
+Penguin.Persistence.Repositories
+Penguin.DependencyInjection.Abstractions
+Penguin.Messaging.Persistence
+Penguin.Reflection
