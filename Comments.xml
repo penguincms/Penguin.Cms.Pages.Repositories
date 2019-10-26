@@ -1,7 +1,7 @@
 <?xml version="1.0"?>
 <doc>
     <assembly>
-        <name>Penguin.Cms.Pages.Repositories.Local</name>
+        <name>Penguin.Cms.Pages.Repositories</name>
     </assembly>
     <members>
     </members>
