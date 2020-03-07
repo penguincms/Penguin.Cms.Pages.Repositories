@@ -1,5 +1,4 @@
-﻿using Penguin.Cms.Pages;
-using Penguin.Cms.Repositories;
+﻿using Penguin.Cms.Repositories;
 using Penguin.Messaging.Core;
 using Penguin.Messaging.Persistence.Messages;
 using Penguin.Persistence.Abstractions.Interfaces;
@@ -15,19 +14,19 @@ namespace Penguin.Cms.Pages.Repositories
     [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
     public class PageRepository : AuditableEntityRepository<Page>
     {
+        private const string EMPTY_URL_MESSAGE = "Url can not be null or whitespace";
+
+        private static ConcurrentDictionary<string, Page> _cachedPages;
+
         private ConcurrentDictionary<string, Page> CachedPages
         {
             get
             {
-                _cachedPages = _cachedPages ?? GenerateCache();
+                _cachedPages = _cachedPages ?? this.GenerateCache();
 
                 return _cachedPages;
             }
         }
-
-        private const string EMPTY_URL_MESSAGE = "Url can not be null or whitespace";
-
-        private static ConcurrentDictionary<string, Page> _cachedPages;
 
         public PageRepository(IPersistenceContext<Page> dbContext, MessageBus messageBus = null) : base(dbContext, messageBus)
         {
@@ -46,9 +45,9 @@ namespace Penguin.Cms.Pages.Repositories
 
             if (url != null)
             {
-                CachedPages.TryRemove(url, out Page _);
+                this.CachedPages.TryRemove(url, out Page _);
 
-                CachedPages.TryAdd(url, entity);
+                this.CachedPages.TryAdd(url, entity);
             }
 
             entity.Parameters = entity.Parameters.Where(p => !string.IsNullOrWhiteSpace(p.Name)).ToList();
@@ -56,7 +55,10 @@ namespace Penguin.Cms.Pages.Repositories
             base.AcceptMessage(update);
         }
 
-        public Page GetByUrl(string url) => this.Where(p => p.Url == url).FirstOrDefault();
+        public Page GetByUrl(string url)
+        {
+            return this.Where(p => p.Url == url).FirstOrDefault();
+        }
 
         public string GetContentFromCache(string url)
         {
@@ -65,7 +67,7 @@ namespace Penguin.Cms.Pages.Repositories
                 throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url));
             }
 
-            return CachedPages[url.ToLower(CultureInfo.CurrentCulture)].Content;
+            return this.CachedPages[url.ToLower(CultureInfo.CurrentCulture)].Content;
         }
 
         public bool TryGetPageFromCache(string url, out Page page)
@@ -75,7 +77,7 @@ namespace Penguin.Cms.Pages.Repositories
                 throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url));
             }
 
-            return CachedPages.TryGetValue(url.ToLower(CultureInfo.CurrentCulture), out page);
+            return this.CachedPages.TryGetValue(url.ToLower(CultureInfo.CurrentCulture), out page);
         }
 
         private ConcurrentDictionary<string, Page> GenerateCache()
