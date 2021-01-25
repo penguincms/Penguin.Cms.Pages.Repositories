@@ -9,8 +9,6 @@ using System.Linq;
 
 namespace Penguin.Cms.Pages.Repositories
 {
-    [SuppressMessage("Globalization", "CA1303:Do not pass literals as localized parameters")]
-    [SuppressMessage("Naming", "CA1710:Identifiers should have correct suffix")]
     [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
     public class PageRepository : AuditableEntityRepository<Page>
     {
