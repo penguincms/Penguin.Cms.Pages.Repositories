@@ -9,7 +9,6 @@ using System.Linq;
 
 namespace Penguin.Cms.Pages.Repositories
 {
-    [SuppressMessage("Design", "CA1054:Uri parameters should not be strings")]
     public class PageRepository : AuditableEntityRepository<Page>
     {
         private const string EMPTY_URL_MESSAGE = "Url can not be null or whitespace";
