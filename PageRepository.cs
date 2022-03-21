@@ -3,7 +3,6 @@ using Penguin.Messaging.Core;
 using Penguin.Messaging.Persistence.Messages;
 using Penguin.Persistence.Abstractions.Interfaces;
 using System.Collections.Concurrent;
-using System.Diagnostics.CodeAnalysis;
 using System.Globalization;
 using System.Linq;
 
@@ -52,10 +51,7 @@ namespace Penguin.Cms.Pages.Repositories
             base.AcceptMessage(update);
         }
 
-        public Page GetByUrl(string url)
-        {
-            return this.Where(p => p.Url == url).FirstOrDefault();
-        }
+        public Page GetByUrl(string url) => this.Where(p => p.Url == url).FirstOrDefault();
 
         public string GetContentFromCache(string url)
         {
