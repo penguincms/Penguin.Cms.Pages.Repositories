@@ -41,9 +41,9 @@ namespace Penguin.Cms.Pages.Repositories
 
             if (url != null)
             {
-                this.CachedPages.TryRemove(url, out Page _);
+                _ = this.CachedPages.TryRemove(url, out _);
 
-                this.CachedPages.TryAdd(url, entity);
+                _ = this.CachedPages.TryAdd(url, entity);
             }
 
             entity.Parameters = entity.Parameters.Where(p => !string.IsNullOrWhiteSpace(p.Name)).ToList();
@@ -51,7 +51,10 @@ namespace Penguin.Cms.Pages.Repositories
             base.AcceptMessage(update);
         }
 
-        public Page GetByUrl(string url) => this.Where(p => p.Url == url).FirstOrDefault();
+        public Page GetByUrl(string url)
+        {
+            return this.Where(p => p.Url == url).FirstOrDefault();
+        }
 
         public string GetContentFromCache(string url)
         {
@@ -81,7 +84,7 @@ namespace Penguin.Cms.Pages.Repositories
             {
                 if (p.Url != null)
                 {
-                    cache.TryAdd(p.Url.ToLower(CultureInfo.CurrentCulture), p);
+                    _ = cache.TryAdd(p.Url.ToLower(CultureInfo.CurrentCulture), p);
                 }
             }
 
