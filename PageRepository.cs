@@ -18,7 +18,7 @@ namespace Penguin.Cms.Pages.Repositories
         {
             get
             {
-                _cachedPages = _cachedPages ?? this.GenerateCache();
+                _cachedPages ??= GenerateCache();
 
                 return _cachedPages;
             }
@@ -28,27 +28,27 @@ namespace Penguin.Cms.Pages.Repositories
         {
         }
 
-        public override void AcceptMessage(Updating<Page> update)
+        public override void AcceptMessage(Updating<Page> updateMessage)
         {
-            if (update is null)
+            if (updateMessage is null)
             {
-                throw new System.ArgumentNullException(nameof(update));
+                throw new System.ArgumentNullException(nameof(updateMessage));
             }
 
-            Page entity = update.Target;
+            Page entity = updateMessage.Target;
 
             string url = entity.Url?.ToLower(CultureInfo.CurrentCulture);
 
             if (url != null)
             {
-                _ = this.CachedPages.TryRemove(url, out _);
+                _ = CachedPages.TryRemove(url, out _);
 
-                _ = this.CachedPages.TryAdd(url, entity);
+                _ = CachedPages.TryAdd(url, entity);
             }
 
             entity.Parameters = entity.Parameters.Where(p => !string.IsNullOrWhiteSpace(p.Name)).ToList();
 
-            base.AcceptMessage(update);
+            base.AcceptMessage(updateMessage);
         }
 
         public Page GetByUrl(string url)
@@ -58,29 +58,23 @@ namespace Penguin.Cms.Pages.Repositories
 
         public string GetContentFromCache(string url)
         {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url));
-            }
-
-            return this.CachedPages[url.ToLower(CultureInfo.CurrentCulture)].Content;
+            return string.IsNullOrWhiteSpace(url)
+                ? throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url))
+                : CachedPages[url.ToLower(CultureInfo.CurrentCulture)].Content;
         }
 
         public bool TryGetPageFromCache(string url, out Page page)
         {
-            if (string.IsNullOrWhiteSpace(url))
-            {
-                throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url));
-            }
-
-            return this.CachedPages.TryGetValue(url.ToLower(CultureInfo.CurrentCulture), out page);
+            return string.IsNullOrWhiteSpace(url)
+                ? throw new System.ArgumentException(EMPTY_URL_MESSAGE, nameof(url))
+                : CachedPages.TryGetValue(url.ToLower(CultureInfo.CurrentCulture), out page);
         }
 
         private ConcurrentDictionary<string, Page> GenerateCache()
         {
-            ConcurrentDictionary<string, Page> cache = new ConcurrentDictionary<string, Page>();
+            ConcurrentDictionary<string, Page> cache = new();
 
-            foreach (Page p in this.All)
+            foreach (Page p in All)
             {
                 if (p.Url != null)
                 {
@@ -89,6 +83,21 @@ namespace Penguin.Cms.Pages.Repositories
             }
 
             return cache;
+        }
+
+        public Page GetByUrl(System.Uri url)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public string GetContentFromCache(System.Uri url)
+        {
+            throw new System.NotImplementedException();
+        }
+
+        public bool TryGetPageFromCache(System.Uri url, out Page page)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }
